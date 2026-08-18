@@ -1,0 +1,8 @@
+body{
+    background-image: url("./images/cityatlas.jpeg");
+    background-size:cover;
+}
+h1{
+    font-size: 50px;
+    color: white;
+}
