@@ -1,8 +1,107 @@
+*{
+    margin:0;
+    box-sizing: border-box;
+    font-family: 'Poppins',sans-serif;
+}
+
 body{
     background-image: url("./images/hero\ image.png");
-    background-size:cover;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 }
 h1{
-    font-size: 30px;
     color: white;
+    margin-top: 20px;
+    margin-left: 20px;
+}
+#globe{
+    background: linear-gradient(90deg,rgb(198, 105, 13),rgb(255, 255, 255));
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+}
+#mainhead{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+#mainhead pre{
+    color: white;
+    font-weight: bolder;
+}
+
+#everything{
+    background: linear-gradient(
+    90deg,
+    #a855f7 0%,
+    #c026d3 30%,
+    #ec4899 60%,
+    #ff7043 100%
+  );
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    filter: drop-shadow(0 0 3px #000) drop-shadow(0 0 10px rgba(0,0,0,.9)) drop-shadow(0 0 20px rgba(0,0,0,.6));
+}
+#description{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: rgb(213, 212, 212);
+}
+
+
+/* 📱 Android / iPhone */
+@media (max-width: 600px){
+    h1{
+        font-size: 15px;
+    }
+    #mainhead{
+        width: 100%;
+        height: 80px;
+        font-size: 25px;
+        margin-top: 30px;
+    }
+    #description{
+        width: 100%;
+        font-size: 9px;
+
+    }
+}
+
+/* 📱 iPad / Tablet */
+@media (min-width: 601px) and (max-width: 1030px){
+    h1{
+        font-size: 35px;
+    }
+    #mainhead{
+        width: 100%;
+        height: 160px;
+        font-size: 60px;
+        margin-top: 70px;
+    }
+    #description{
+        width: 100%;
+        font-size: 18px;
+    }
+}
+
+/* 💻 Laptop / MacBook */
+@media (min-width: 1031px){
+    h1{
+        font-size: 40px;
+    }
+    #mainhead{
+        width: 100%;
+        height: 180px;
+        font-size: 65px;
+    }
+    #description{
+        width: 100%;
+        font-size: 19px;
+    }
 }
