@@ -58,6 +58,7 @@ h1{
     justify-content: center;
     align-items: center;
     text-align: center;
+    margin-top: 30px;
 }
 #logo{
     background-color: #000;
@@ -65,12 +66,8 @@ h1{
     display: flex;
     align-items: center;
     justify-content: center;
-    border-top-left-radius: 50%;
-    border-bottom-left-radius: 50%;
-}
-
-#search{
-    background-color: #000;
+    border-top-left-radius: 50px;
+    border-bottom-left-radius: 50px;
 }
 
 #search{
@@ -86,18 +83,20 @@ h1{
     color: white;
     border: none;
     outline: none;
-    font-size: 15px;
     text-align: left;
 }
 
 #buttonbox{
     display: flex;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: center;
     background-color: #000;
+    border-top-right-radius: 50px;
+    border-bottom-right-radius: 50px;
 }
 
 #button{
+    border-radius: 50px;
     background: linear-gradient(
     90deg,
     #a855f7 0%,
@@ -107,6 +106,22 @@ h1{
   );
     color: white;
     border: none;
+}
+#popular{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: rgb(213, 212, 212);
+    margin-top: 14px;
+}
+#popular span{
+    display: inline-flex;
+    border: rgb(84, 83, 83) 1px solid;
+    text-align: center;
+    backdrop-filter: blur(2px);
+    border-radius: 50px;
+    align-items: center;
+    justify-content: center;
 }
 
 
@@ -118,14 +133,43 @@ h1{
     #mainhead{
         width: 100%;
         height: 80px;
-        font-size: 25px;
-        margin-top: 30px;
+        font-size: 30px;
+        margin-top: 140px;
     }
     #description{
         width: 100%;
         font-size: 9px;
-
     }
+    #logo{
+        height: 25px;
+        width: 25px;
+        font-size: 10px;
+    }
+    #search{
+        height: 25px;
+        width: 150px;
+    }
+    #search input{
+        font-size: 10px;
+    }
+    #buttonbox{
+        height: 25px;
+        width: 80px;
+    }
+    #button{
+        font-size: 10px;
+        height: 18px;
+        width: 70px;
+    }
+    #popular{
+        font-size: 8px;
+    }
+    #popular span{
+        height: 20px;
+        width: 35px;
+        margin-left: 2px;
+    }
+
 }
 
 /* 📱 iPad / Tablet */
@@ -136,12 +180,41 @@ h1{
     #mainhead{
         width: 100%;
         height: 160px;
-        font-size: 60px;
-        margin-top: 70px;
+        font-size: 65px;
+        margin-top: 270px;
     }
     #description{
         width: 100%;
-        font-size: 18px;
+        font-size: 19px;
+    }
+    #logo{
+        height: 45px;
+        width: 40px;
+        font-size: 20px;
+    }
+    #search{
+        height: 45px;
+        width: 400px;
+    }
+    #search input{
+        font-size: 15px;
+    }
+    #buttonbox{
+        height: 45px;
+        width: 135px;
+    }
+    #button{
+        font-size: 14px;
+        height: 30px;
+        width: 120px;
+    }
+    #popular{
+        font-size: 16px;
+    }
+    #popular span{
+        height: 35px;
+        width: 75px;
+        margin-left: 6px;
     }
 }
 
@@ -168,12 +241,24 @@ h1{
         height: 45px;
         width: 500px;
     }
+    #search input{
+        font-size: 16px;
+    }
     #buttonbox{
         height: 45px;
-        width: 110px;
-        font-size: 60px;
+        width: 162px;
     }
     #button{
         font-size: 16px;
+        height: 35px;
+        width: 150px;
+    }
+    #popular{
+        font-size: 16px;
+    }
+    #popular span{
+        height: 35px;
+        width: 75px;
+        margin-left: 8px;
     }
 }
