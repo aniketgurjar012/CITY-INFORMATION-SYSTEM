@@ -122,6 +122,15 @@ h1{
     align-items: center;
     justify-content: center;
 }
+#overview{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    flex-wrap: wrap;
+    overflow:auto;
+    color: rgb(213, 212, 212);
+}
 
 
 /* 📱 Android / iPhone */
@@ -144,33 +153,48 @@ h1{
         margin-top: 50px;
     }
     #logo{
-        height: 30px;
-        width: 30px;
-        font-size: 15px;
+        height: 40px;
+        width: 40px;
+        font-size: 18px;
     }
     #search{
-        height: 30px;
+        height: 40px;
         width: 200px;
     }
     #search input{
-        font-size: 12px;
+        font-size: 13px;
     }
     #buttonbox{
-        height: 30px;
+        height: 40px;
         width: 100px;
     }
     #button{
-        font-size: 12px;
-        height: 20px;
+        font-size: 13px;
+        height: 30px;
         width: 90px;
     }
     #popular{
-        font-size: 9px;
+        font-size: 10px;
     }
     #popular span{
         height: 20px;
-        width: 35px;
+        width: 37px;
         margin-left: 2px;
+    }
+    #overflow{
+        font-size: 20px;
+    }
+    #overflow span{
+        height: 50px;
+        width: 50px;
+        margin-left: 2px;
+    }
+    #overview{
+        margin-top: 60px;
+        width: auto;
+    }
+    .overviewbox{
+        font-size: 18px;
     }
 
 }
@@ -194,28 +218,28 @@ h1{
         margin-top: 50px;
     }
     #logo{
-        height: 45px;
-        width: 40px;
-        font-size: 20px;
+        height: 55px;
+        width: 55px;
+        font-size: 28px;
     }
     #search{
-        height: 45px;
+        height: 55px;
         width: 400px;
     }
     #search input{
-        font-size: 15px;
+        font-size: 17px;
     }
     #buttonbox{
-        height: 45px;
+        height: 55px;
         width: 135px;
     }
     #button{
-        font-size: 14px;
-        height: 30px;
+        font-size: 15px;
+        height: 35px;
         width: 120px;
     }
     #popular{
-        font-size: 16px;
+        font-size: 17px;
     }
     #popular span{
         height: 35px;
@@ -243,28 +267,28 @@ h1{
         margin-top: 50px;
     }
     #logo{
-        height: 45px;
-        width: 40px;
-        font-size: 20px;
+        height: 60px;
+        width: 60px;
+        font-size: 25px;
     }
     #search{
-        height: 45px;
+        height: 60px;
         width: 500px;
     }
     #search input{
-        font-size: 16px;
+        font-size: 17px;
     }
     #buttonbox{
-        height: 45px;
+        height: 60px;
         width: 162px;
     }
     #button{
-        font-size: 16px;
-        height: 35px;
+        font-size: 17px;
+        height: 45px;
         width: 150px;
     }
     #popular{
-        font-size: 16px;
+        font-size: 17px;
     }
     #popular span{
         height: 35px;
