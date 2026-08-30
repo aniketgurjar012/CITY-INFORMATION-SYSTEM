@@ -176,6 +176,42 @@ h1{
     backdrop-filter: blur(4px);
     padding: 10px;
 }
+#headingkeyfeatures{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background: linear-gradient(
+    90deg,
+    #a855f7 0%,
+    #c026d3 30%,
+    #ec4899 60%,
+    #ff7043 100%
+    );
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    filter: drop-shadow(0 0 3px #000) drop-shadow(0 0 10px rgba(0,0,0,.9)) drop-shadow(0 0 20px rgba(0,0,0,.6));
+    width: auto;
+}
+#keyfeatures{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    flex-wrap: wrap;
+    width:auto;
+    color: rgb(213, 212, 212);
+}
+.keyfeaturesbox{
+    height: 85px;
+    width: 300px;
+    margin: 12px;
+    border: rgb(84, 83, 83) 2px solid;
+    border-radius: 10px;
+    backdrop-filter: blur(4px);
+    padding: 10px;
+}
 .footer{
     background-color: #1a1a1a;
     height: 250px;
@@ -185,18 +221,18 @@ h1{
 /* 📱 Android / iPhone */
 @media (max-width: 600px){
     h1{
-        font-size: 15px;
+        font-size: 20px;
     }
     #mainhead{
         width: 100%;
         height: 80px;
-        font-size: 34px;
+        font-size: 35px;
         margin-top: 220px;
         margin-bottom: 20px;
     }
     #description{
         width: 100%;
-        font-size: 13px;
+        font-size: 14px;
     }
     #searchbar{
         margin-top: 50px;
@@ -223,15 +259,15 @@ h1{
         width: 90px;
     }
     #popular{
-        font-size: 10px;
+        font-size: 12px;
     }
     #popular span{
         height: 20px;
-        width: 45px;
+        width: 50px;
         margin-left: 3px;
     }
     #overview{
-        margin-top: 100px;
+        margin-top: 80px;
         width: auto;
     }
     .overviewbox{
@@ -243,12 +279,12 @@ h1{
     .icon{
         font-size: 25px;
     }
-    #headinghowitworks{
+    #headinghowitworks,#headingkeyfeatures{
         font-size: 20px;
         margin-top: 150px;
         margin-bottom: 16px;
     }
-    .howitworksbox{
+    .howitworksbox,.keyfeaturesbox{
         font-size: 15px;
     }
 }
@@ -256,7 +292,7 @@ h1{
 /* 📱 iPad / Tablet */
 @media (min-width: 601px) and (max-width: 1030px){
     h1{
-        font-size: 35px;
+        font-size: 32px;
     }
     #mainhead{
         width: 100%;
@@ -301,7 +337,7 @@ h1{
         margin-left: 6px;
     }
     #overview{
-        margin-top: 150px;
+        margin-top: 120px;
         width: auto;
     }
     .overviewbox{
@@ -316,10 +352,15 @@ h1{
     }
     #headinghowitworks{
         font-size: 28px;
-        margin-top: 150px;
+        margin-top: 180px;
         margin-bottom: 25px;
     }
-    .howitworksbox{
+    #headingkeyfeatures{
+        font-size: 28px;
+        margin-top: 110px;
+        margin-bottom: 25px;
+    }
+    .howitworksbox,.keyfeaturesbox{
         font-size: 15px;
     }
 }
@@ -327,7 +368,7 @@ h1{
 /* 💻 Laptop / MacBook */
 @media (min-width: 1031px){
     h1{
-        font-size: 40px;
+        font-size: 35px;
     }
     #mainhead{
         width: 100%;
@@ -387,10 +428,15 @@ h1{
     }
     #headinghowitworks{
         font-size: 30px;
-        margin-top: 150px;
+        margin-top: 300px;
         margin-bottom: 26px;
     }
-    .howitworksbox{
+    #headingkeyfeatures{
+        font-size: 30px;
+        margin-top: 120px;
+        margin-bottom: 26px;
+    }
+    .howitworksbox,.keyfeaturesbox{
         font-size: 15px;
     }
 }
