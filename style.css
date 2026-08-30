@@ -371,6 +371,13 @@ h1{
     .howitworksbox,.keyfeaturesbox{
         font-size: 15px;
     }
+    .boxhover{
+        box-shadow:
+            0 0 5px rgba(192, 38, 211, 0.5),
+            0 0 9px rgba(168, 85, 247, 0.3),
+            0 0 13px rgba(236, 72, 153, 0.25),
+            0 0 18px rgba(255, 112, 67, 0.3);
+    }
 }
 
 /* 💻 Laptop / MacBook */
