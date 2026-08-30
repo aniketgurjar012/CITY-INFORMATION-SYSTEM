@@ -287,7 +287,15 @@ h1{
     .howitworksbox,.keyfeaturesbox{
         font-size: 15px;
     }
+    .boxhover{
+        box-shadow:
+            0 0 5px rgba(192, 38, 211, 0.5),
+            0 0 9px rgba(168, 85, 247, 0.3),
+            0 0 13px rgba(236, 72, 153, 0.25),
+            0 0 18px rgba(255, 112, 67, 0.3);
+    }
 }
+
 
 /* 📱 iPad / Tablet */
 @media (min-width: 601px) and (max-width: 1030px){
@@ -438,5 +446,21 @@ h1{
     }
     .howitworksbox,.keyfeaturesbox{
         font-size: 15px;
+    }
+    .boxhover:hover {
+        transform: scale(1.05);
+        box-shadow:
+            0 0 8px rgba(192, 38, 211, 0.45),
+            0 0 15px rgba(168, 85, 247, 0.3),
+            0 0 21px rgba(236, 72, 153, 0.3),
+            0 0 40px rgba(255, 112, 67, 0.3);
+    }
+    .pop:hover{
+        transform: scale(1.05);
+        box-shadow:
+            0 0 8px rgba(192, 38, 211, 0.45),
+            0 0 15px rgba(168, 85, 247, 0.3),
+            0 0 21px rgba(236, 72, 153, 0.3),
+            0 0 40px rgba(255, 112, 67, 0.3);
     }
 }
