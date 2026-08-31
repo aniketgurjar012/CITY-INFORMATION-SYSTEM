@@ -3,13 +3,28 @@
     box-sizing: border-box;
     font-family: 'Poppins',sans-serif;
 }
+/* Pure page content
+body > * {
+} */
 
+@keyframes pageEnter {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
 body{
     background-image: url("./images/hero\ image.png");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     background-attachment: fixed;
+    opacity: 0;
+    animation: pageEnter 1.6s ease-out 0.3s forwards;
 }
 h1{
     color: white;
@@ -173,7 +188,7 @@ h1{
     margin: 12px;
     border: rgb(84, 83, 83) 1.5px solid;
     border-radius: 10px;
-    backdrop-filter: blur(4px);
+    backdrop-filter: blur(3px);
     padding: 10px;
 }
 #headingkeyfeatures{
@@ -209,11 +224,12 @@ h1{
     margin: 12px;
     border: rgb(84, 83, 83) 1.5px solid;
     border-radius: 10px;
-    backdrop-filter: blur(4px);
+    backdrop-filter: blur(3px);
     padding: 10px;
 }
 .footer{
-    background-color: #1a1a1a;
+    background-color: rgba(0,0,0,.6);
+    backdrop-filter: blur(1px);
     height: 250px;
     margin-top: 200px;
 }
@@ -443,7 +459,7 @@ h1{
     }
     #headinghowitworks{
         font-size: 30px;
-        margin-top: 300px;
+        margin-top: 280px;
         margin-bottom: 26px;
     }
     #headingkeyfeatures{
@@ -464,6 +480,13 @@ h1{
     }
     .pop:hover{
         transform: scale(1.05);
+        box-shadow:
+            0 0 8px rgba(192, 38, 211, 0.45),
+            0 0 15px rgba(168, 85, 247, 0.3),
+            0 0 21px rgba(236, 72, 153, 0.3),
+            0 0 40px rgba(255, 112, 67, 0.3);
+    }
+    #button:hover{
         box-shadow:
             0 0 8px rgba(192, 38, 211, 0.45),
             0 0 15px rgba(168, 85, 247, 0.3),
