@@ -171,7 +171,7 @@ h1{
     height: 65px;
     width: 300px;
     margin: 12px;
-    border: rgb(84, 83, 83) 2px solid;
+    border: rgb(84, 83, 83) 1.5px solid;
     border-radius: 10px;
     backdrop-filter: blur(4px);
     padding: 10px;
@@ -207,7 +207,7 @@ h1{
     height: 85px;
     width: 300px;
     margin: 12px;
-    border: rgb(84, 83, 83) 2px solid;
+    border: rgb(84, 83, 83) 1.5px solid;
     border-radius: 10px;
     backdrop-filter: blur(4px);
     padding: 10px;
