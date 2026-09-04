@@ -3,10 +3,6 @@
     box-sizing: border-box;
     font-family: 'Poppins',sans-serif;
 }
-/* Pure page content
-body > * {
-} */
-
 @keyframes pageEnter {
     from {
         opacity: 0;
@@ -228,12 +224,33 @@ h1{
     padding: 10px;
 }
 .footer{
+    display: flex;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
     background-color: rgba(0,0,0,.6);
     backdrop-filter: blur(1px);
-    height: 250px;
     margin-top: 200px;
+    color: #df71ee;
+    width: auto;
+    border-top:1px solid rgb(169, 168, 168);
+    padding-bottom: 20px;
 }
-
+.footerdata pre{
+    color: rgb(169, 168, 168);
+}
+.footerdata a{
+    color: rgb(169, 168, 168);
+}
+#lastline{
+    display: flex;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+    background-color: rgba(0,0,0,.6);
+    backdrop-filter: blur(1px);
+    color: rgb(169, 168, 168);
+    width: auto;
+    border-top:1px solid rgb(169, 168, 168);
+}
 /* 📱 Android / iPhone */
 @media (max-width: 600px){
     h1{
@@ -309,6 +326,24 @@ h1{
             0 0 9px rgba(168, 85, 247, 0.3),
             0 0 13px rgba(236, 72, 153, 0.25),
             0 0 18px rgba(255, 112, 67, 0.3);
+    }
+    .footer{
+        justify-content: flex-start;
+    }
+    .footerhead{
+        font-size: 22px;
+        margin-top: 40px;
+        margin-bottom: 10px;
+        font-weight: 550;
+        font-size: 18px;
+    }
+    .footerdata{
+        margin-left: 100px;
+        margin-right: 10px;
+    }
+    #lastlinedata{
+        margin: 20px;
+        font-size: 14px;
     }
 }
 
@@ -393,6 +428,15 @@ h1{
             0 0 9px rgba(168, 85, 247, 0.3),
             0 0 13px rgba(236, 72, 153, 0.25),
             0 0 18px rgba(255, 112, 67, 0.3);
+    }
+    .footerhead{
+        font-size: 22px;
+        margin-top: 40px;
+        margin-bottom: 10px;
+        font-weight: 550;
+    }
+    #lastlinedata{
+        margin: 20px;
     }
 }
 
@@ -492,5 +536,14 @@ h1{
             0 0 15px rgba(168, 85, 247, 0.3),
             0 0 21px rgba(236, 72, 153, 0.3),
             0 0 40px rgba(255, 112, 67, 0.3);
+    }
+    .footerhead{
+        font-size: 22px;
+        margin-top: 40px;
+        margin-bottom: 10px;
+        font-weight: 550;
+    }
+    #lastlinedata{
+        margin: 20px;
     }
 }
