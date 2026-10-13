@@ -3,169 +3,396 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CityAtlas</title>
+    <title>CityAtlas | Discover Every City</title>
+    <meta name="description" content="Discover iconic places, famous food, premium hotels, restaurants, weather and travel information around the world.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css" integrity="sha512-QeR2VH+lsBE5LSAe1Q5EnTBbe7XTBubt8dG93Y7gidSgdMCr8nVqKcfKAMyN96SV8KDbZVTDXChatu5G2KQGzg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
-    <h1><i class="fa-solid fa-globe" id="globe"></i><span id="cityatlas">CityAtlas</span></h1>
-    <div id="mainhead">
-        <pre>Explore Any City.
-Discover <span id="everything">Everything.</span></pre>
+
+<!-- Loader -->
+<div id="loader" class="loader hidden">
+    <div class="loader-content">
+        <i class="fa-solid fa-earth-americas"></i>
+        <h2>CityAtlas</h2>
+        <p id="loaderText">Discovering your destination...</p>
+        <div class="loading-line"><span></span></div>
     </div>
-    <div id="description">
-        <pre id="des">Search any city or district in the world and get all information
-you need in one place.
-        </pre>
+</div>
+
+<!-- Homepage -->
+<section id="homepage" class="homepage">
+    <header class="home-navbar">
+        <a href="#" class="logo" id="homeLogo">
+            <i class="fa-solid fa-earth-americas"></i>
+            <span>CityAtlas</span>
+        </a>
+        <nav id="homeNav" class="home-nav">
+            <a href="#homepage">Home</a>
+            <a href="#explore">Explore</a>
+            <a href="#categories">Categories</a>
+        </nav>
+        <button id="homeMenu" class="icon-btn home-menu" aria-label="Open menu">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+    </header>
+
+    <main class="home-hero" id="explore">
+        <div class="hero-badge">
+            <i class="fa-solid fa-location-dot"></i>
+            Your World. One Search Away.
+        </div>
+        <h1>Explore Any City.<br>Discover <span>Everything.</span></h1>
+        <p>Explore iconic destinations, legendary food, renowned hotels, amazing restaurants and fascinating stories from around the world.</p>
+
+        <div class="search-container">
+            <form id="homeSearchForm" class="home-search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input id="homeSearch" type="text" placeholder="Search any city or district..." autocomplete="off" required>
+                <button type="submit">Explore Now <i class="fa-solid fa-arrow-right"></i></button>
+            </form>
+            <div id="homeSuggestions" class="suggestions hidden"></div>
+        </div>
+
+        <div class="hero-footnote">
+            <i class="fa-solid fa-earth-asia"></i>
+            Discover Beyond Boundaries
+        </div>
+    </main>
+
+    <div class="home-categories" id="categories">
+        <div class="category">
+            <i class="fa-solid fa-building"></i>
+            <span>Overview</span>
+        </div>
+        <div class="category">
+            <i class="fa-solid fa-landmark"></i>
+            <span>History</span>
+        </div>
+        <div class="category">
+            <i class="fa-solid fa-location-dot"></i>
+            <span>Places</span>
+        </div>
+        <div class="category">
+            <i class="fa-solid fa-utensils"></i>
+            <span>Food</span>
+        </div>
+        <div class="category">
+            <i class="fa-solid fa-cloud-sun"></i>
+            <span>Weather</span>
+        </div>
+        <div class="category">
+            <i class="fa-solid fa-map"></i>
+            <span>Map</span>
+        </div>
+        <div class="category">
+            <i class="fa-solid fa-bed"></i>
+            <span>Hotels</span>
+        </div>
     </div>
-    <div id="searchbar">
-        <div>
-            <i class="fa-solid fa-magnifying-glass" id="logo"></i>
-        </div>
-        <div id="search">
-            <input placeholder="Search for any city or district...">
-        </div>
-        <div id="buttonbox">
-            <button id="button" onclick="window.location.href='explore.html'">
-                Explore Now
+</section>
+
+<!-- Dashboard -->
+<section id="dashboard" class="dashboard hidden">
+    <div id="dashboardBackground" class="dashboard-background"></div>
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="sidebar">
+        <a href="#" id="dashboardLogo" class="logo sidebar-logo">
+            <i class="fa-solid fa-earth-americas"></i>
+            <span>CityAtlas</span>
+        </a>
+        <p class="sidebar-label">EXPLORE DESTINATION</p>
+
+        <nav class="sidebar-nav">
+            <button class="sidebar-link active" data-target="overview">
+                <i class="fa-solid fa-house"></i> Overview
             </button>
+            <button class="sidebar-link" data-target="places">
+                <i class="fa-solid fa-location-dot"></i> Famous Places
+            </button>
+            <button class="sidebar-link" data-target="food">
+                <i class="fa-solid fa-utensils"></i> Famous Food
+            </button>
+            <button class="sidebar-link" data-target="history">
+                <i class="fa-solid fa-landmark"></i> History
+            </button>
+            <button class="sidebar-link" data-target="weather">
+                <i class="fa-solid fa-cloud-sun"></i> Weather
+            </button>
+            <button class="sidebar-link" data-target="bestTime">
+                <i class="fa-solid fa-calendar-check"></i> Best Time to Visit
+            </button>
+            <button class="sidebar-link" data-target="facts">
+                <i class="fa-solid fa-star"></i> Fun Facts
+            </button>
+            <button class="sidebar-link" data-target="mapSection">
+                <i class="fa-solid fa-map"></i> Map
+            </button>
+            <button class="sidebar-link" data-target="hotels">
+                <i class="fa-solid fa-bed"></i> Premium Hotels
+            </button>
+            <button class="sidebar-link" data-target="restaurants">
+                <i class="fa-solid fa-utensils"></i> Restaurants
+            </button>
+        </nav>
+
+        <button id="shareBtn" class="share-btn">
+            <i class="fa-solid fa-share-nodes"></i> Share City
+        </button>
+    </aside>
+
+    <!-- Dashboard Main -->
+    <main class="dashboard-main">
+        <header class="dashboard-navbar">
+            <div class="dashboard-search-container">
+                <form id="dashboardSearchForm" class="dashboard-search">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input id="dashboardSearch" placeholder="Explore another city..." autocomplete="off">
+                    <button type="submit" aria-label="Search">
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </form>
+                <div id="dashboardSuggestions" class="suggestions hidden"></div>
+            </div>
+
+            <div class="dashboard-actions">
+                <button id="changeTheme" class="icon-btn" title="Change colour theme">
+                    <i class="fa-solid fa-palette"></i>
+                </button>
+                <button id="backHome" class="icon-btn" title="Homepage">
+                    <i class="fa-solid fa-house"></i>
+                </button>
+                <button id="sidebarToggle" class="icon-btn" title="Menu">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+        </header>
+
+        <div class="dashboard-content">
+
+            <!-- City Information -->
+            <section class="city-intro">
+                <div class="city-tag">
+                    <i class="fa-solid fa-location-dot"></i> YOUR DESTINATION
+                </div>
+                <h1 id="cityName">Discovering...</h1>
+                <p id="cityLocation">Loading location...</p>
+
+                <div class="city-stats">
+                    <div class="stat-card">
+                        <span><i class="fa-solid fa-users"></i> Population</span>
+                        <strong id="population">—</strong>
+                    </div>
+                    <div class="stat-card">
+                        <span><i class="fa-solid fa-map-pin"></i> Region</span>
+                        <strong id="cityRegion">—</strong>
+                    </div>
+                    <div class="stat-card">
+                        <span><i class="fa-solid fa-globe"></i> Country</span>
+                        <strong id="cityCountry">—</strong>
+                    </div>
+                    <div class="stat-card">
+                        <span><i class="fa-solid fa-clock"></i> Local Time</span>
+                        <strong id="localTime">—</strong>
+                    </div>
+                </div>
+                <div id="heroCredit" class="hero-credit"></div>
+            </section>
+
+            <!-- Overview -->
+            <section id="overview" class="content-section">
+                <div class="section-heading">
+                    <h2><i class="fa-solid fa-compass"></i> City Overview</h2>
+                </div>
+
+                <div class="overview-grid">
+                    <article class="glass-card">
+                        <div class="card-heading">
+                            <h3>Discover This City</h3>
+                            <i class="fa-solid fa-circle-info"></i>
+                        </div>
+                        <p id="cityDescription" class="limited-text">Discovering city information...</p>
+                    </article>
+
+                    <article class="glass-card">
+                        <div class="card-heading">
+                            <h3>Live Weather</h3>
+                            <i class="fa-solid fa-cloud-sun"></i>
+                        </div>
+                        <div class="weather-main">
+                            <i id="weatherIcon" class="fa-solid fa-cloud-sun"></i>
+                            <div>
+                                <strong id="temperature">—</strong>
+                                <p id="weatherCondition">Loading...</p>
+                            </div>
+                        </div>
+                        <div class="weather-small">
+                            <span>Humidity: <b id="humidity">—</b></span>
+                            <span>Wind: <b id="wind">—</b></span>
+                        </div>
+                    </article>
+
+                    <article class="glass-card">
+                        <div class="card-heading">
+                            <h3>Explore Location</h3>
+                            <i class="fa-solid fa-map-location-dot"></i>
+                        </div>
+                        <div id="miniMap"></div>
+                        <button class="gradient-btn" data-target="mapSection">
+                            Open Map <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </article>
+                </div>
+            </section>
+
+            <!-- Best Time and Facts -->
+            <div class="travel-highlights">
+                <article id="bestTime" class="glass-card highlight-card">
+                    <div class="card-heading">
+                        <h3><i class="fa-solid fa-calendar-check"></i> Best Time to Visit</h3>
+                    </div>
+                    <strong id="bestMonths">Discovering...</strong>
+                    <p id="bestReason">Finding the best travel season...</p>
+                </article>
+
+                <article id="facts" class="glass-card highlight-card">
+                    <div class="card-heading">
+                        <h3><i class="fa-solid fa-star"></i> Interesting Facts</h3>
+                    </div>
+                    <div id="factsGrid" class="facts-list">Loading interesting facts...</div>
+                </article>
+            </div>
+
+            <!-- Famous Places -->
+            <section id="places" class="content-section">
+                <div class="section-heading">
+                    <h2><i class="fa-solid fa-location-dot"></i> Iconic Places to Visit</h2>
+                    <span class="section-badge">AI Curated</span>
+                </div>
+                <div id="placesGrid" class="places-grid">
+                    <div class="empty-state">Discovering iconic destinations...</div>
+                </div>
+            </section>
+
+            <!-- Famous Food -->
+            <section id="food" class="content-section">
+                <div class="section-heading">
+                    <h2><i class="fa-solid fa-utensils"></i> Famous Food & Local Flavours</h2>
+                </div>
+                <article class="glass-card">
+                    <p id="foodDescription" class="limited-text">Discovering local cuisine...</p>
+                </article>
+                <div id="foodGrid" class="food-grid"></div>
+            </section>
+
+            <!-- History -->
+            <section id="history" class="content-section">
+                <div class="section-heading">
+                    <h2><i class="fa-solid fa-landmark"></i> History & Culture</h2>
+                </div>
+                <article class="glass-card history-card">
+                    <i class="fa-solid fa-book-open"></i>
+                    <p id="historyContent" class="limited-text">Discovering history...</p>
+                </article>
+            </section>
+
+            <!-- Weather -->
+            <section id="weather" class="content-section">
+                <div class="section-heading">
+                    <h2><i class="fa-solid fa-cloud-sun"></i> Weather & Rain Forecast</h2>
+                </div>
+
+                <div class="weather-grid">
+                    <div class="glass-card detail-card">
+                        <i class="fa-solid fa-temperature-high"></i>
+                        <span>Feels Like</span>
+                        <strong id="feelsLike">—</strong>
+                    </div>
+                    <div class="glass-card detail-card">
+                        <i class="fa-solid fa-droplet"></i>
+                        <span>Humidity</span>
+                        <strong id="humidityDetail">—</strong>
+                    </div>
+                    <div class="glass-card detail-card">
+                        <i class="fa-solid fa-wind"></i>
+                        <span>Wind Speed</span>
+                        <strong id="windDetail">—</strong>
+                    </div>
+                    <div class="glass-card detail-card">
+                        <i class="fa-solid fa-cloud-rain"></i>
+                        <span>Today's Rain Chance</span>
+                        <strong id="rainChance">—</strong>
+                    </div>
+                    <div class="glass-card detail-card">
+                        <i class="fa-solid fa-sunrise"></i>
+                        <span>Sunrise</span>
+                        <strong id="sunrise">—</strong>
+                    </div>
+                    <div class="glass-card detail-card">
+                        <i class="fa-solid fa-sunset"></i>
+                        <span>Sunset</span>
+                        <strong id="sunset">—</strong>
+                    </div>
+                </div>
+
+                <article class="glass-card forecast-card">
+                    <h3><i class="fa-solid fa-calendar-days"></i> 6-Day Weather Forecast</h3>
+                    <div id="forecastGrid" class="forecast-grid">Loading weather forecast...</div>
+                </article>
+            </section>
+
+            <!-- Map -->
+            <section id="mapSection" class="content-section">
+                <div class="section-heading">
+                    <h2><i class="fa-solid fa-map"></i> Explore on Map</h2>
+                </div>
+                <article class="glass-card full-map-card">
+                    <div id="fullMap"></div>
+                    <a id="osmLink" class="gradient-btn" target="_blank" rel="noopener noreferrer">
+                        Open in OpenStreetMap
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                    </a>
+                </article>
+            </section>
+
+            <!-- Hotels -->
+            <section id="hotels" class="content-section">
+                <div class="section-heading">
+                    <h2><i class="fa-solid fa-bed"></i> Renowned Hotels</h2>
+                    <span class="section-badge">Premium Stays</span>
+                </div>
+                <div id="hotelsGrid" class="listing-grid">
+                    <div class="empty-state">Finding renowned hotels...</div>
+                </div>
+            </section>
+
+            <!-- Restaurants -->
+            <section id="restaurants" class="content-section">
+                <div class="section-heading">
+                    <h2><i class="fa-solid fa-utensils"></i> Famous Restaurants</h2>
+                    <span class="section-badge">Popular Dining</span>
+                </div>
+                <div id="restaurantsGrid" class="listing-grid">
+                    <div class="empty-state">Finding famous restaurants...</div>
+                </div>
+            </section>
+
+            <!-- Footer -->
+            <footer class="dashboard-footer">
+                <p>© <span id="currentYear"></span> CityAtlas — Explore Beyond Boundaries</p>
+                <p>AI-generated travel recommendations. Verify business details before visiting.</p>
+            </footer>
         </div>
-    </div>
-    <div id="popular">
-        <p>Popular Searches : <p>
-        <span class="pop">Delhi</span>
-        <span class="pop">Mumbai</span>
-        <span class="pop">Indore</span>
-        <span class="pop">Harda</span>
-        <span class="pop">Paris</span>
-    </div>
-    <div id="overview">
-        <div class="overviewbox boxhover">
-            <i class="fa-solid fa-archway icon"></i>
-            <p>Overview</p>
-        </div>
-        <div class="overviewbox boxhover">
-            <i class="fa-solid fa-landmark icon"></i>
-            <p>History</p>
-        </div>
-        <div class="overviewbox boxhover">
-            <i class="fa-solid fa-location-dot icon"></i>
-            <p>Places</p>
-        </div>
-        <div class="overviewbox boxhover">
-            <i class="fa-solid fa-utensils icon"></i>
-            <p>Food</p>
-        </div>
-        <div class="overviewbox boxhover">
-            <i class="fa-solid fa-cloud-sun icon"></i>
-            <p>Weather</p>
-        </div>
-        <div class="overviewbox boxhover">
-            <i class="fa-solid fa-map icon"></i>
-            <p>Map</p>
-        </div>
-        <div class="overviewbox boxhover">
-            <i class="fa-solid fa-bed icon"></i>
-            <p>Hotels</p>
-        </div>
-    </div>
-    <div id="headinghowitworks">
-        <h2>HOW IT WORKS</h2>
-    </div>
-    <div id="howitworks">
-        <div class="howitworksbox boxhover">
-            <h3>01 — Search Your Destination</h3>
-            <p>Find your city or district.</p>
-        </div>
-        <div class="howitworksbox boxhover">
-            <h3>02 — Explore City Information</h3>
-            <p>Get essential city details.</p>
-        </div>
-        <div class="howitworksbox boxhover">
-            <h3>03 — Discover Places</h3>
-            <p>Find places worth exploring.</p>
-        </div>
-        <div class="howitworksbox boxhover">
-            <h3>04 — Check Live Weather</h3>
-            <p>See current weather conditions.</p>
-        </div>
-        <div class="howitworksbox boxhover">
-            <h3>05 — Explore the Map</h3>
-            <p>Navigate and locate nearby places.</p>
-        </div>
-        <div class="howitworksbox boxhover">
-            <h3>06 — Plan Your Visit</h3>
-            <p>Prepare better for your trip</p>
-        </div>
-    </div> 
-    <div id="headingkeyfeatures">
-        <h2>KEY FEATURES</h2>
-    </div>
-    <div id="keyfeatures">
-        <div class="keyfeaturesbox boxhover">
-            <h3>🔍 Smart City Search</h3>
-            <p>Search any city or district and get its information instantly.</p>
-        </div>
-        <div class="keyfeaturesbox boxhover">
-            <h3>🌦️ Live Weather</h3>
-            <p>Check the current temperature, weather condition, humidity and wind.</p>
-        </div>
-        <div class="keyfeaturesbox boxhover">
-            <h3>📍 City Information</h3>
-            <p>Explore population, location, country, state and other important details.</p>
-        </div>
-        <div class="keyfeaturesbox boxhover">
-            <h3>🏛️ Explore Places</h3>
-            <p>Discover popular attractions, historical places, parks and nearby locations.</p>
-        </div>
-        <div class="keyfeaturesbox boxhover">
-            <h3>🍽️ Food & Local Spots</h3>
-            <p>Find popular restaurants, cafés and local places around the city.</p>
-        </div>
-        <div class="keyfeaturesbox boxhover">
-            <h3>🗺️ Interactive Map</h3>
-            <p>Explore the city with an interactive map and location markers.</p>
-        </div>
-        <div class="keyfeaturesbox boxhover">
-            <h3>📖 History & Culturep</h3>
-            <p>Learn about the city's history, culture and interesting facts.</p>
-        </div>
-        <div class="keyfeaturesbox boxhover">
-            <h3>📱 Modern & Responsive UI</h3>
-            <p>Enjoy a clean, premium experience on mobile, tablet and desktop.</p>
-        </div>
-    </div> 
-    <div class="footer">
-        <div class="footerdata">
-            <div class="footerhead">CityAtlas</div>
-            <pre>Explore any city.
-Discover Everything.</pre>
-        </div>
-        <div class="footerdata">
-            <div class="footerhead">Information</div>
-            <pre>
-<a href="index.html#headinghowitworks" style="text-decoration: none !important;">How it works</a>
-<a href="index.html#headingkeyfeatures" style="text-decoration: none !important;">Features</a>
-            </pre>
-        </div>
-        <div class="footerdata">
-            <div class="footerhead">Platform</div>
-            <pre><a href="#" style="text-decoration: none;">Privacy policy</a>
-<a href="#" style="text-decoration: none;">Terms & conditions</a></pre>
-        </div>
-        <div class="footerdata">
-            <div class="footerhead">Contact</div>
-            <pre>Aniket Gurjar (+91 9174268110)
-Chetan Sahu (+91 )</pre>
-        </div>
-        <div class="footerdata">
-            <div class="footerhead">Support</div>
-            <pre>aniketgurjar012@gmail.com
-sahuc@gmail.com</pre>
-        </div>
-    </div>
-    <div id="lastline">
-        <p id="lastlinedata">&copy; 2026 CityAtlas —— City Information System</p>
-    </div>
+    </main>
+</section>
+
+<div id="toast" class="toast"></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
