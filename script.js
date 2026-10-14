@@ -2,7 +2,6 @@
 
 // API Settings
 const CONFIG = {
-    GEMINI_KEYS: [],
     MAX_ITEMS: 10,
     CACHE_HOURS: 24,
     IMAGE_CONCURRENCY: 3,
@@ -205,70 +204,20 @@ async function getGeminiModels(key) {
     return names;
 }
 
-// Gemini Request
 async function askGemini(prompt) {
-    const keys = CONFIG.GEMINI_KEYS;
-    const start = geminiCounter++ % keys.length;
-    let lastError = null;
+    const response = await fetch("/api/gemini", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ prompt: prompt })
+    });
 
-    for (let i = 0; i < keys.length; i++) {
-        let key = keys[(start + i) % keys.length];
-
-        try {
-            let models = await getGeminiModels(key);
-
-            for (let model of models) {
-                try {
-                    console.log("Trying Gemini:", model);
-
-                    let data = await fetchJSON(`${API.gemini}/${model}:generateContent`, {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "x-goog-api-key": key
-                        },
-                        body: JSON.stringify({
-                            contents: [{
-                                parts: [{ text: prompt }]
-                            }],
-                            generationConfig: {
-                                temperature: 0.1,
-                                responseMimeType: "application/json"
-                            }
-                        })
-                    }, 25000);
-
-                    let text = data.candidates?.[0]?.content?.parts
-                        ?.map(part => part.text || "").join("");
-
-                    if (!text) {
-                        throw new Error("Empty Gemini response");
-                    }
-
-                    return JSON.parse(text);
-
-                } catch (error) {
-                    lastError = error;
-                    console.log("Model failed:", model);
-
-                    if (error.message.includes("HTTP 503") ||
-                        error.message.includes("HTTP 429") ||
-                        error.message.includes("HTTP 404") ||
-                        error.message.includes("HTTP 400") ||
-                        error.name === "AbortError") {
-                        continue;
-                    }
-
-                    break;
-                }
-            }
-        } catch (error) {
-            lastError = error;
-            console.log("Gemini error:", error.message);
-        }
+    if (!response.ok) {
+        throw new Error("Gemini API unavailable");
     }
 
-    throw lastError || new Error("Gemini unavailable");
+    return await response.json();
 }
 
 // AI City Information
