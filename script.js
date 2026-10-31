@@ -138,16 +138,71 @@ async function fetchJSON(url, options = {}, timeout = 20000) {
     }
 }
 
-// Local Storage Cache
+// Safe In-Memory & LocalStorage Wrapper (handles browser Tracking Prevention / blocked storage)
+const memoryStore = new Map();
+
+const safeStorage = {
+    _supported: null,
+    check() {
+        if (this._supported !== null) return this._supported;
+        try {
+            if (typeof window === "undefined" || !window.localStorage) {
+                this._supported = false;
+                return false;
+            }
+            const testKey = "__test_storage__";
+            window.localStorage.setItem(testKey, "1");
+            window.localStorage.removeItem(testKey);
+            this._supported = true;
+        } catch {
+            this._supported = false;
+        }
+        return this._supported;
+    },
+    getItem(key) {
+        if (!this.check()) {
+            return memoryStore.get(key) ?? null;
+        }
+        try {
+            return window.localStorage.getItem(key);
+        } catch {
+            return memoryStore.get(key) ?? null;
+        }
+    },
+    setItem(key, value) {
+        if (!this.check()) {
+            memoryStore.set(key, String(value));
+            return;
+        }
+        try {
+            window.localStorage.setItem(key, value);
+        } catch {
+            memoryStore.set(key, String(value));
+        }
+    },
+    removeItem(key) {
+        if (!this.check()) {
+            memoryStore.delete(key);
+            return;
+        }
+        try {
+            window.localStorage.removeItem(key);
+        } catch {
+            memoryStore.delete(key);
+        }
+    }
+};
+
+// Safe Storage Cache
 function getCache(key) {
     try {
-        const raw = localStorage.getItem("cityatlas_v11_" + key);
+        const raw = safeStorage.getItem("cityatlas_v11_" + key);
         if (!raw) return null;
 
         const data = JSON.parse(raw);
 
         if (Date.now() > data.expires) {
-            localStorage.removeItem("cityatlas_v11_" + key);
+            safeStorage.removeItem("cityatlas_v11_" + key);
             return null;
         }
 
@@ -159,7 +214,7 @@ function getCache(key) {
 
 function setCache(key, value) {
     try {
-        localStorage.setItem("cityatlas_v11_" + key, JSON.stringify({
+        safeStorage.setItem("cityatlas_v11_" + key, JSON.stringify({
             value: value,
             expires: Date.now() + CONFIG.CACHE_HOURS * 3600000
         }));
@@ -1314,7 +1369,7 @@ function applyTheme(index) {
 function changeTheme() {
     selectedTheme = (selectedTheme + 1) % 4;
     applyTheme(selectedTheme);
-    localStorage.setItem("cityatlas_color_theme", selectedTheme);
+    safeStorage.setItem("cityatlas_color_theme", selectedTheme);
 }
 
 // Share City
@@ -1447,7 +1502,7 @@ function initializeApp() {
     $("#currentYear").textContent = new Date().getFullYear();
 
     const savedTheme = Number(
-        localStorage.getItem("cityatlas_color_theme") || 0
+        safeStorage.getItem("cityatlas_color_theme") || 0
     );
 
     if (Number.isInteger(savedTheme) && savedTheme >= 0 && savedTheme < 4) {
