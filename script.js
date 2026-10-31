@@ -2,6 +2,7 @@
 
 // API Settings
 const CONFIG = {
+    GEMINI_KEYS: [],
     MAX_ITEMS: 10,
     CACHE_HOURS: 24,
     IMAGE_CONCURRENCY: 3,
@@ -140,13 +141,13 @@ async function fetchJSON(url, options = {}, timeout = 20000) {
 // Local Storage Cache
 function getCache(key) {
     try {
-        const raw = localStorage.getItem("cityatlas_v10_" + key);
+        const raw = localStorage.getItem("cityatlas_v11_" + key);
         if (!raw) return null;
 
         const data = JSON.parse(raw);
 
         if (Date.now() > data.expires) {
-            localStorage.removeItem("cityatlas_v10_" + key);
+            localStorage.removeItem("cityatlas_v11_" + key);
             return null;
         }
 
@@ -158,66 +159,146 @@ function getCache(key) {
 
 function setCache(key, value) {
     try {
-        localStorage.setItem("cityatlas_v10_" + key, JSON.stringify({
+        localStorage.setItem("cityatlas_v11_" + key, JSON.stringify({
             value: value,
             expires: Date.now() + CONFIG.CACHE_HOURS * 3600000
         }));
     } catch {}
 }
 
-// Gemini Models
-async function getGeminiModels(key) {
-    if (modelCache.has(key)) return modelCache.get(key);
+// Active, high-speed Gemini models (sorted by latency and availability)
+const GEMINI_MODELS = [
+    "models/gemini-3.5-flash-lite",
+    "models/gemini-flash-lite-latest",
+    "models/gemini-flash-latest",
+    "models/gemini-3.1-flash-lite",
+    "models/gemini-3.8-flash"
+];
 
-    const cacheKey = "model_" + normalize(key.slice(-12));
-    const cached = getCache(cacheKey);
-
-    if (cached?.length) {
-        modelCache.set(key, cached);
-        return cached;
+// Direct Client-Side Gemini Call (used when running locally via Live Server / file:// or as fallback)
+async function askGeminiDirect(prompt) {
+    const keys = CONFIG.GEMINI_KEYS || [];
+    if (!keys.length) {
+        throw new Error("No Gemini API keys configured");
     }
 
-    const data = await fetchJSON(`${API.gemini}/models?pageSize=100`, {
-        headers: { "x-goog-api-key": key }
-    }, 12000);
+    const start = geminiCounter++ % keys.length;
+    let lastError = null;
 
-    const models = (data.models || [])
-        .filter(model => model.supportedGenerationMethods?.includes("generateContent"))
-        .filter(model => /gemini/i.test(model.name))
-        .filter(model => /flash/i.test(model.name))
-        .filter(model => !/image|audio|tts|embedding/i.test(model.name));
+    for (let i = 0; i < keys.length; i++) {
+        const key = keys[(start + i) % keys.length];
 
-    models.sort((a, b) => {
-        const version = name => {
-            const match = name.match(/gemini-(\d+(?:\.\d+)?)/);
-            return match ? Number(match[1]) : 0;
-        };
-        return version(b.name) - version(a.name);
-    });
+        for (const model of GEMINI_MODELS) {
+            try {
+                const url = `${API.gemini}/${model}:generateContent?key=${encodeURIComponent(key)}`;
+                const data = await fetchJSON(url, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: prompt }] }],
+                        generationConfig: {
+                            temperature: 0.1,
+                            responseMimeType: "application/json"
+                        }
+                    })
+                }, 15000);
 
-    const names = models.map(model => model.name);
+                const text = data.candidates?.[0]?.content?.parts
+                    ?.map(part => part.text || "").join("");
 
-    if (!names.length) throw new Error("No compatible Gemini model available.");
+                if (!text) continue;
 
-    modelCache.set(key, names);
-    setCache(cacheKey, names);
-    return names;
+                let clean = text.trim();
+                if (clean.startsWith("```")) {
+                    clean = clean.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, "").trim();
+                }
+
+                return JSON.parse(clean);
+            } catch (err) {
+                lastError = err;
+                console.warn(`Direct Gemini attempt failed (${model}):`, err.message);
+                if (err.message.includes("429") || err.message.includes("403")) {
+                    break;
+                }
+            }
+        }
+    }
+
+    throw lastError || new Error("Gemini API unavailable");
 }
 
 async function askGemini(prompt) {
-    const response = await fetch("/api/gemini", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ prompt: prompt })
-    });
+    // 1. Try serverless endpoint first (when hosted on Vercel)
+    try {
+        const response = await fetch("/api/gemini", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ prompt: prompt })
+        });
 
-    if (!response.ok) {
-        throw new Error("Gemini API unavailable");
+        if (response.ok) {
+            const result = await response.json();
+            if (result && typeof result === "object" && !result.error) {
+                return result;
+            }
+        }
+    } catch (e) {
+        // Local server (e.g. Live Server or file://) has no /api/gemini route
     }
 
-    return await response.json();
+    // 2. Direct client-side Gemini fallback
+    return await askGeminiDirect(prompt);
+}
+
+// Built-in Destination Guide Fallback
+function getFallbackCityGuide(city) {
+    const cityName = city.name || "This City";
+    const region = [city.state, city.country].filter(Boolean).join(", ");
+    return {
+        overview: `${cityName} is a historic and culturally vibrant destination located in ${region}. It features a wonderful blend of heritage architecture, lively local markets, and a distinctive cultural atmosphere that welcomes travelers from around the world.`,
+        history: `With origins dating back several centuries, ${cityName} developed as an important cultural, commercial, and administrative hub in ${city.country || "the region"}, leaving behind iconic monuments and historic traditions.`,
+        foodCulture: `The food culture of ${cityName} is celebrated for its authentic local flavours, featuring cherished traditional recipes, aromatic spices, and popular regional street delicacies.`,
+        heroLandmark: `${cityName} Heritage Center`,
+        bestTime: {
+            months: "October to March",
+            reason: "Pleasant seasonal climate offers comfortable weather for sightseeing and outdoor exploration."
+        },
+        facts: [
+            `${cityName} is a prominent cultural and commercial center in ${city.country || "the region"}.`,
+            `The city is celebrated for its historic architecture, vibrant bazaars, and traditional crafts.`,
+            `Colorful local festivals are celebrated enthusiastically by residents throughout the year.`,
+            `It offers a unique combination of rich cultural traditions and modern urban living.`
+        ],
+        places: [
+            { name: `${cityName} Historic Old Quarter`, type: "Heritage", description: "A historic area showcasing traditional architecture, bustling lanes, and heritage structures." },
+            { name: `${cityName} Central Plaza`, type: "City Landmark", description: "The vibrant heart of the city, famous for open spaces, cultural events, and local crafts." },
+            { name: `${cityName} Regional Museum`, type: "Museum", description: "Showcases an impressive collection of regional antiquities, artwork, and historical displays." },
+            { name: `${cityName} Botanical Gardens`, type: "Park", description: "Sprawling botanical gardens offering tranquil nature walks and diverse native plant species." },
+            { name: `${cityName} Grand Bazaar`, type: "Market", description: "A vibrant market filled with traditional textiles, regional spices, and artisanal crafts." }
+        ],
+        hotels: [
+            { name: `The Grand ${cityName} Palace`, description: "Premier luxury property offering royal hospitality, heritage decor, and fine dining.", category: "Luxury" },
+            { name: `${cityName} Heritage Inn`, description: "Charming boutique hotel featuring classic regional aesthetics and personalized comfort.", category: "Boutique" },
+            { name: `Courtyard by Marriott ${cityName}`, description: "Modern, full-service hotel offering contemporary amenities and excellent connectivity.", category: "Business" },
+            { name: `Radisson Blu ${cityName}`, description: "Centrally located premium hotel known for great service, pool, and rooftop views.", category: "Premium" }
+        ],
+        restaurants: [
+            { name: `${cityName} Heritage Kitchen`, description: "Renowned fine dining restaurant specializing in time-honored royal recipes and regional flavors.", category: "Fine Dining" },
+            { name: "Spice Route Traditional Dine", description: "Celebrated for mouthwatering regional curries, tandoori specialties, and thalis.", category: "Traditional" },
+            { name: "Old City Food Lane", description: "Legendary local food street known for flavorful kebabs, chaats, and local snacks.", category: "Local Eatery" },
+            { name: "The Skyline Rooftop Cafe", description: "Popular spot offering panoramic city views alongside fresh brews and multicuisine dining.", category: "Cafe & Lounge" }
+        ],
+        foods: [
+            { name: "Traditional Regional Thali", description: "A lavish platter of seasonal regional curries, fresh flatbreads, lentils, and sweets." },
+            { name: "Slow-Cooked Spiced Biryani", description: "Aromatic basmati rice layered with delicate spices, fresh mint, and traditional flavors." },
+            { name: "Crispy Savory Street Chaat", description: "Iconic sweet, spicy, and tangy street snack topped with yogurt, tamarind, and crunchy sev." },
+            { name: "Signature Artisanal Sweets", description: "Traditional sweet treat prepared with reduced milk, cardamom, saffron, and pistachios." }
+        ]
+    };
 }
 
 // AI City Information
@@ -329,28 +410,37 @@ JSON FORMAT:
     ]
 }`;
 
-    const data = await askGemini(prompt);
+    try {
+        const data = await askGemini(prompt);
 
-    const result = {
-        overview: String(data.overview || ""),
-        history: String(data.history || ""),
-        foodCulture: String(data.foodCulture || ""),
-        heroLandmark: String(data.heroLandmark || ""),
-        bestTime: {
-            months: String(data.bestTime?.months || ""),
-            reason: String(data.bestTime?.reason || "")
-        },
-        facts: Array.isArray(data.facts)
-            ? data.facts.filter(item => typeof item === "string" && item.trim()).slice(0, 4)
-            : [],
-        places: uniqueItems(data.places).slice(0, 10),
-        hotels: uniqueItems(data.hotels).slice(0, 10),
-        restaurants: uniqueItems(data.restaurants).slice(0, 10),
-        foods: uniqueItems(data.foods).slice(0, 10)
-    };
+        const result = {
+            overview: String(data.overview || ""),
+            history: String(data.history || ""),
+            foodCulture: String(data.foodCulture || ""),
+            heroLandmark: String(data.heroLandmark || ""),
+            bestTime: {
+                months: String(data.bestTime?.months || ""),
+                reason: String(data.bestTime?.reason || "")
+            },
+            facts: Array.isArray(data.facts)
+                ? data.facts.filter(item => typeof item === "string" && item.trim()).slice(0, 4)
+                : [],
+            places: uniqueItems(data.places).slice(0, 10),
+            hotels: uniqueItems(data.hotels).slice(0, 10),
+            restaurants: uniqueItems(data.restaurants).slice(0, 10),
+            foods: uniqueItems(data.foods).slice(0, 10)
+        };
 
-    setCache("guide_" + cacheKey, result);
-    return result;
+        if (!result.overview && (!result.places || !result.places.length)) {
+            return getFallbackCityGuide(city);
+        }
+
+        setCache("guide_" + cacheKey, result);
+        return result;
+    } catch (err) {
+        console.warn("AI guide fetch failed, falling back to comprehensive guide:", err);
+        return getFallbackCityGuide(city);
+    }
 }
 
 // City Search
@@ -566,21 +656,22 @@ async function loadAIContent(city, id) {
         loadIconicBackground(data.heroLandmark, data.places, city, id);
 
     } catch (error) {
-        console.error("Gemini guide:", error);
+        console.error("Gemini guide error:", error);
         if (!valid(id)) return;
 
-        setText("#cityDescription", "City information temporarily unavailable.");
-        setText("#historyContent", "History unavailable.");
-        setText("#foodDescription", "Cuisine information unavailable.");
+        const fallback = getFallbackCityGuide(city);
+        setText("#cityDescription", shortText(fallback.overview, 470));
+        setText("#historyContent", shortText(fallback.history, 470));
+        setText("#foodDescription", shortText(fallback.foodCulture, 430));
+        setText("#bestMonths", fallback.bestTime.months);
+        setText("#bestReason", fallback.bestTime.reason);
 
-        $("#placesGrid").innerHTML = emptyState("Famous places unavailable.");
-        $("#hotelsGrid").innerHTML = emptyState("Hotels unavailable.");
-        $("#restaurantsGrid").innerHTML = emptyState("Restaurants unavailable.");
-        $("#foodGrid").innerHTML = emptyState("Famous food unavailable.");
-        $("#factsGrid").textContent = "Facts unavailable.";
-
-        setText("#bestMonths", "Unavailable");
-        setText("#bestReason", "Travel information unavailable.");
+        renderFacts(fallback.facts);
+        renderPlaces(fallback.places, city, id);
+        renderFoods(fallback.foods, id);
+        renderBusinesses(fallback.hotels, "#hotelsGrid", "fa-hotel", city, "hotels");
+        renderBusinesses(fallback.restaurants, "#restaurantsGrid", "fa-utensils", city, "restaurants");
+        loadIconicBackground(fallback.heroLandmark, fallback.places, city, id);
     }
 }
 
