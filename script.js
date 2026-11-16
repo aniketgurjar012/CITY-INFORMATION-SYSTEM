@@ -1324,9 +1324,9 @@ function initializeMaps(city) {
             shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png"
         });
 
-        // Fast & reliable tiles
-        const tiles = "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png";
-        const attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>';
+        // 100% Free OpenStreetMap tiles (No API key required)
+        const tiles = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
+        const attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 
         miniMap = L.map("miniMap", {
             zoomControl: false,
@@ -1336,7 +1336,6 @@ function initializeMaps(city) {
 
         L.tileLayer(tiles, {
             attribution: attribution,
-            subdomains: "abcd",
             maxZoom: 19
         }).addTo(miniMap);
         L.marker(coordinates).addTo(miniMap);
@@ -1344,7 +1343,6 @@ function initializeMaps(city) {
         fullMap = L.map("fullMap").setView(coordinates, 12);
         L.tileLayer(tiles, {
             attribution: attribution,
-            subdomains: "abcd",
             maxZoom: 19
         }).addTo(fullMap);
         L.marker(coordinates).addTo(fullMap).bindPopup(escapeHTML(city.name));
