@@ -1283,49 +1283,86 @@ function updateLocalTime(timezone) {
 
 // Maps
 function initializeMaps(city) {
-    const coordinates = [city.latitude, city.longitude];
-
-    if (miniMap) {
-        miniMap.remove();
-        miniMap = null;
+    if (typeof L === "undefined") {
+        console.warn("Leaflet library is not available.");
+        return;
     }
 
-    if (fullMap) {
-        fullMap.remove();
-        fullMap = null;
+    const latitude = Number(city?.latitude);
+    const longitude = Number(city?.longitude);
+    if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) {
+        console.warn("Invalid coordinates for map:", city);
+        return;
     }
 
-    miniMap = L.map("miniMap", {
-        zoomControl: false,
-        scrollWheelZoom: false,
-        dragging: false
-    }).setView(coordinates, 11);
+    const coordinates = [latitude, longitude];
 
-    fullMap = L.map("fullMap").setView(coordinates, 12);
+    try {
+        if (miniMap) {
+            miniMap.remove();
+            miniMap = null;
+        }
+        const miniContainer = document.getElementById("miniMap");
+        if (miniContainer && miniContainer._leaflet_id) {
+            delete miniContainer._leaflet_id;
+        }
 
-    const tiles = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
-    const attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+        if (fullMap) {
+            fullMap.remove();
+            fullMap = null;
+        }
+        const fullContainer = document.getElementById("fullMap");
+        if (fullContainer && fullContainer._leaflet_id) {
+            delete fullContainer._leaflet_id;
+        }
 
-    L.tileLayer(tiles, {
-        attribution: attribution,
-        maxZoom: 19
-    }).addTo(miniMap);
+        // Configure default marker icons
+        delete L.Icon.Default.prototype._getIconUrl;
+        L.Icon.Default.mergeOptions({
+            iconRetinaUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png",
+            iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png",
+            shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png"
+        });
 
-    L.tileLayer(tiles, {
-        attribution: attribution,
-        maxZoom: 19
-    }).addTo(fullMap);
+        // Fast & reliable tiles
+        const tiles = "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png";
+        const attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>';
 
-    L.marker(coordinates).addTo(miniMap);
-    L.marker(coordinates).addTo(fullMap).bindPopup(escapeHTML(city.name));
+        miniMap = L.map("miniMap", {
+            zoomControl: false,
+            scrollWheelZoom: false,
+            dragging: false
+        }).setView(coordinates, 11);
 
-    $("#osmLink").href =
-        `https://www.openstreetmap.org/?mlat=${city.latitude}&mlon=${city.longitude}#map=12/${city.latitude}/${city.longitude}`;
+        L.tileLayer(tiles, {
+            attribution: attribution,
+            subdomains: "abcd",
+            maxZoom: 19
+        }).addTo(miniMap);
+        L.marker(coordinates).addTo(miniMap);
 
-    setTimeout(() => {
-        miniMap?.invalidateSize();
-        fullMap?.invalidateSize();
-    }, 350);
+        fullMap = L.map("fullMap").setView(coordinates, 12);
+        L.tileLayer(tiles, {
+            attribution: attribution,
+            subdomains: "abcd",
+            maxZoom: 19
+        }).addTo(fullMap);
+        L.marker(coordinates).addTo(fullMap).bindPopup(escapeHTML(city.name));
+
+        const osmLink = $("#osmLink");
+        if (osmLink) {
+            osmLink.href = `https://www.openstreetmap.org/?mlat=${latitude}&mlon=${longitude}#map=12/${latitude}/${longitude}`;
+        }
+
+        [100, 350, 700].forEach(delay => {
+            setTimeout(() => {
+                miniMap?.invalidateSize();
+                fullMap?.invalidateSize();
+            }, delay);
+        });
+    } catch (error) {
+        console.error("Map initialization failed:", error);
+    }
 }
 
 // Sidebar Navigation
